@@ -8,17 +8,7 @@ import StatsTab from '@/components/tabs/StatsTab'
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState('books')
-  const [books, setBooks] = useState([
-    {
-      id: 1,
-      title: 'El Viaje del Héroe',
-      author: 'Juan Pérez',
-      slug: 'el-viaje-del-heroe',
-      description: 'Una novela épica sobre aventura y descubrimiento',
-      published: true,
-      chapters: 12,
-    },
-  ])
+  const [books, setBooks] = useState([])
 
   return (
     <>
