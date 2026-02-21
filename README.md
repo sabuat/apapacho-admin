@@ -20,16 +20,12 @@ Panel de administración para Apapacho Reader construido con Next.js, React y Ta
 
 ```bash
 npm install
-# o
-pnpm install
 ```
 
 ## Desarrollo
 
 ```bash
 npm run dev
-# o
-pnpm dev
 ```
 
 Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
@@ -39,46 +35,44 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 ```bash
 npm run build
 npm start
-# o
-pnpm build
-pnpm start
 ```
 
 ## Despliegue en Netlify
 
 1. Sube el repositorio a GitHub
 2. Conecta el repositorio en Netlify
-3. Configura:
-   - Build command: `npm run build`
-   - Publish directory: `.next`
-4. Agrega el plugin de Netlify para Next.js en `netlify.toml`
+3. Netlify detectará automáticamente la configuración de Next.js
+4. El plugin de Netlify para Next.js manejará el build y deployment
 
 ## Estructura del Proyecto
 
 ```
 apapacho-admin/
-├── app/
-│   ├── globals.css
-│   ├── layout.tsx
-│   └── page.tsx
+├── pages/
+│   ├── _app.js
+│   ├── _document.js
+│   └── index.js
 ├── components/
-│   ├── Header.tsx
-│   ├── Navigation.tsx
+│   ├── Layout.js
 │   └── tabs/
-│       ├── BooksTab.tsx
-│       ├── ChaptersTab.tsx
-│       ├── WebinarsTab.tsx
-│       └── StatsTab.tsx
+│       ├── BooksTab.js
+│       ├── ChaptersTab.js
+│       ├── WebinarsTab.js
+│       └── StatsTab.js
+├── styles/
+│   └── globals.css
 ├── public/
 ├── tailwind.config.js
-├── tsconfig.json
+├── next.config.mjs
+├── postcss.config.mjs
+├── jsconfig.json
 └── package.json
 ```
 
 ## Tecnologías
 
 - **Next.js** - Framework React
-- **TypeScript** - Tipado estático
+- **React** - Librería UI
 - **Tailwind CSS** - Estilos
 - **Playfair Display** - Tipografía serif
 - **Lato** - Tipografía sans-serif

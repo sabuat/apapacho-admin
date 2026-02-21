@@ -1,5 +1,3 @@
-'use client'
-
 import { useState } from 'react'
 
 export default function WebinarsTab() {
@@ -18,7 +16,7 @@ export default function WebinarsTab() {
         </div>
       ) : (
         <div className="space-y-4">
-          {webinars.map((webinar: any) => (
+          {webinars.map((webinar) => (
             <div key={webinar.id} className="border border-gray-200 rounded p-4">
               <h3 className="font-semibold text-gray-900">{webinar.title}</h3>
               <p className="text-sm text-gray-600 mt-1">{webinar.description}</p>

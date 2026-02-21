@@ -1,50 +1,29 @@
-'use client'
-
 import { useState } from 'react'
 
-interface Book {
-  id: number
-  title: string
-  author: string
-  slug: string
-  description: string
-  published: boolean
-  chapters: number
-}
-
-interface BooksTabProps {
-  books: Book[]
-  onBooksChange: () => void
-}
-
-export default function BooksTab({ books, onBooksChange }: BooksTabProps) {
+export default function BooksTab({ books, setBooks }) {
   const [formData, setFormData] = useState({
     title: '',
     author: '',
     slug: '',
     description: '',
   })
-  const [loading, setLoading] = useState(false)
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
-    setLoading(true)
-
-    try {
-      // Aquí irá la lógica para crear el libro
-      alert('Libro creado correctamente')
-      setFormData({ title: '', author: '', slug: '', description: '' })
-      onBooksChange()
-    } catch (error) {
-      alert('Error al crear el libro')
-    } finally {
-      setLoading(false)
+    const newBook = {
+      id: books.length + 1,
+      ...formData,
+      published: true,
+      chapters: 0,
     }
+    setBooks([...books, newBook])
+    setFormData({ title: '', author: '', slug: '', description: '' })
+    alert('Libro creado correctamente')
   }
 
   return (
@@ -96,17 +75,13 @@ export default function BooksTab({ books, onBooksChange }: BooksTabProps) {
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
-                rows={4}
+                rows="4"
                 className="input-field"
                 placeholder="Describe el libro..."
               />
             </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-primary w-full disabled:opacity-50"
-            >
-              {loading ? 'Creando...' : 'Crear Libro'}
+            <button type="submit" className="btn-primary w-full">
+              Crear Libro
             </button>
           </form>
         </div>
@@ -128,14 +103,8 @@ export default function BooksTab({ books, onBooksChange }: BooksTabProps) {
                     <h3 className="text-xl font-serif font-bold text-gray-900">{book.title}</h3>
                     <p className="text-sm text-gray-600">por {book.author}</p>
                   </div>
-                  <span
-                    className={`px-3 py-1 rounded text-xs font-semibold ${
-                      book.published
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-yellow-100 text-yellow-700'
-                    }`}
-                  >
-                    {book.published ? '✓ Publicado' : '⊘ Borrador'}
+                  <span className="px-3 py-1 rounded text-xs font-semibold bg-green-100 text-green-700">
+                    ✓ Publicado
                   </span>
                 </div>
                 <p className="text-sm text-gray-600 mb-4">{book.description}</p>

@@ -1,18 +1,4 @@
-interface Book {
-  id: number
-  title: string
-  author: string
-  slug: string
-  description: string
-  published: boolean
-  chapters: number
-}
-
-interface StatsTabProps {
-  books: Book[]
-}
-
-export default function StatsTab({ books }: StatsTabProps) {
+export default function StatsTab({ books }) {
   const published = books.filter((b) => b.published).length
   const draft = books.filter((b) => !b.published).length
   const totalChapters = books.reduce((sum, b) => sum + b.chapters, 0)

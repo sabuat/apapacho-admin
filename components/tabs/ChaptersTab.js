@@ -1,23 +1,9 @@
-interface Book {
-  id: number
-  title: string
-  author: string
-  slug: string
-  description: string
-  published: boolean
-  chapters: number
-}
-
-interface ChaptersTabProps {
-  books: Book[]
-}
-
-export default function ChaptersTab({ books }: ChaptersTabProps) {
+export default function ChaptersTab({ books }) {
   return (
     <div className="card">
       <h2 className="text-2xl font-serif font-bold text-gold mb-6">Gestionar Capítulos</h2>
       <p className="text-gray-600">Selecciona un libro para gestionar sus capítulos</p>
-      
+
       {books.length > 0 && (
         <div className="mt-6 space-y-2">
           {books.map((book) => (
