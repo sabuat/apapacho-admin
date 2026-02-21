@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import axios from 'axios'
+import { trpc } from '../../lib/trpc'
 
-export default function BooksTab({ books, onBooksChange, apiUrl }) {
+export default function BooksTab({ books, onBooksChange }) {
   const [formData, setFormData] = useState({
     title: '',
     author: '',
@@ -20,7 +20,7 @@ export default function BooksTab({ books, onBooksChange, apiUrl }) {
     setLoading(true)
 
     try {
-      await axios.post(`${apiUrl}/api/trpc/books.create`, formData)
+      await trpc.books.create.mutate(formData)
       alert('Libro creado correctamente')
       setFormData({ title: '', author: '', slug: '', description: '' })
       onBooksChange()
@@ -85,7 +85,7 @@ export default function BooksTab({ books, onBooksChange, apiUrl }) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full btn-primary disabled:opacity-50"
+              className="w-full bg-yellow-600 text-white py-2 rounded-lg font-semibold hover:bg-yellow-700 transition disabled:opacity-50"
             >
               {loading ? 'Creando...' : 'Crear Libro'}
             </button>
@@ -108,7 +108,7 @@ export default function BooksTab({ books, onBooksChange, apiUrl }) {
                     <p className="text-sm text-gray-600">{book.author}</p>
                   </div>
                   <span className={`px-3 py-1 rounded text-xs font-semibold ${
-                    book.published ? 'status-published' : 'status-draft'
+                    book.published ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
                   }`}>
                     {book.published ? '✓ Publicado' : '⊘ Borrador'}
                   </span>
