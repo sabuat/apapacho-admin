@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lato:wght@300;400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-gold: #C5A059;
+  --color-blue: #8C97AE;
+  --color-red: #9E4747;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Lato', sans-serif;
+  background-color: #f9f7f4;
+  color: #1a1a1a;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', serif;
+}
+
+.btn-primary {
+  @apply px-6 py-3 bg-gold text-white rounded font-semibold hover:opacity-90 transition;
+}
+
+.btn-secondary {
+  @apply px-6 py-3 border-2 border-gold text-gold rounded font-semibold hover:bg-gold hover:text-white transition;
+}
+
+.btn-danger {
+  @apply px-4 py-2 bg-apapacho-red text-white rounded font-semibold hover:opacity-90 transition;
+}
+
+.card {
+  @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
+}
+
+.input-field {
+  @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold;
+}
+
+.text-gold {
+  color: var(--color-gold);
+}
+
+.text-blue {
+  color: var(--color-blue);
+}
+
+.text-red {
+  color: var(--color-red);
+}

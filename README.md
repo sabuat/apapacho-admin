@@ -1,102 +1,88 @@
-# Apapacho Admin - Panel de Administración
+# Apapacho Admin Panel
 
-Panel de administración web para gestionar libros, capítulos y webinars de Apapacho Reader.
+Panel de administración para Apapacho Reader construido con Next.js, React y Tailwind CSS.
 
 ## Características
 
-- ✅ Crear y gestionar libros
-- ✅ Gestionar capítulos por libro
-- ✅ Gestionar webinars
-- ✅ Dashboard con estadísticas
-- ✅ Autenticación segura (solo admins)
-- ✅ Interfaz moderna con Tailwind CSS
+- 📚 Gestión de libros
+- 📖 Gestión de capítulos
+- 🎥 Gestión de webinars
+- 📊 Dashboard con estadísticas
+- 🎨 Diseño responsivo con Tailwind CSS
+- 📱 Compatible con dispositivos móviles
 
 ## Requisitos
 
-- Node.js 16+
+- Node.js 18+
 - npm o pnpm
 
-## Instalación Local
+## Instalación
 
 ```bash
-# Instalar dependencias
 npm install
-
-# Ejecutar en desarrollo
-npm run dev
-
-# Compilar para producción
-npm run build
+# o
+pnpm install
 ```
 
-La aplicación estará disponible en `http://localhost:5173`
+## Desarrollo
+
+```bash
+npm run dev
+# o
+pnpm dev
+```
+
+Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
+
+## Build para Producción
+
+```bash
+npm run build
+npm start
+# o
+pnpm build
+pnpm start
+```
 
 ## Despliegue en Netlify
 
-### Opción 1: Desde GitHub (Recomendado)
-
-1. **Crea un repositorio en GitHub** con el nombre `apapacho-admin`
-2. **Sube los archivos** a tu repositorio
-3. **En Netlify:**
-   - Conecta tu repositorio de GitHub
+1. Sube el repositorio a GitHub
+2. Conecta el repositorio en Netlify
+3. Configura:
    - Build command: `npm run build`
-   - Publish directory: `dist`
-   - Agrega variable de entorno: `VITE_API_URL` = `https://3000-iofk42tnf1qwkk8m5zhyy-de4313a9.us2.manus.computer`
-
-### Opción 2: Deploy Manual
-
-```bash
-npm run build
-# Sube la carpeta 'dist' a Netlify
-```
-
-## Configuración del Dominio
-
-Para usar `admin.editorialapapacho.com`:
-
-1. En Netlify, ve a **Domain settings**
-2. Agrega un nuevo dominio personalizado: `admin.editorialapacho.com`
-3. Sigue las instrucciones para configurar los registros DNS
-
-## Variables de Entorno
-
-Crea un archivo `.env.local`:
-
-```
-VITE_API_URL=https://tu-api-url.com
-```
+   - Publish directory: `.next`
+4. Agrega el plugin de Netlify para Next.js en `netlify.toml`
 
 ## Estructura del Proyecto
 
 ```
-src/
+apapacho-admin/
+├── app/
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx
 ├── components/
-│   ├── Header.jsx
-│   ├── Tabs.jsx
+│   ├── Header.tsx
+│   ├── Navigation.tsx
 │   └── tabs/
-│       ├── BooksTab.jsx
-│       ├── ChaptersTab.jsx
-│       ├── WebinarsTab.jsx
-│       └── StatsTab.jsx
-├── App.jsx
-├── main.jsx
-└── index.css
+│       ├── BooksTab.tsx
+│       ├── ChaptersTab.tsx
+│       ├── WebinarsTab.tsx
+│       └── StatsTab.tsx
+├── public/
+├── tailwind.config.js
+├── tsconfig.json
+└── package.json
 ```
 
-## API Endpoints
+## Tecnologías
 
-El panel se conecta a los siguientes endpoints:
-
-- `GET /api/trpc/auth.me` - Obtener usuario actual
-- `POST /api/trpc/auth.logout` - Cerrar sesión
-- `GET /api/trpc/books.list` - Listar libros
-- `POST /api/trpc/books.create` - Crear libro
-- `POST /api/trpc/books.update` - Actualizar libro
-- `GET /api/trpc/chapters.getByBook` - Obtener capítulos
-- `POST /api/trpc/chapters.create` - Crear capítulo
-- `GET /api/trpc/webinars.list` - Listar webinars
-- `POST /api/trpc/webinars.create` - Crear webinar
+- **Next.js** - Framework React
+- **TypeScript** - Tipado estático
+- **Tailwind CSS** - Estilos
+- **Playfair Display** - Tipografía serif
+- **Lato** - Tipografía sans-serif
 
 ## Licencia
 
-Privado - Editorial Apapacho
+MIT
