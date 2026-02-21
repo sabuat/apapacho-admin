@@ -29,25 +29,3 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Playfair Display', serif;
 }
-
-@layer components {
-  .btn-primary {
-    @apply px-6 py-3 bg-gold text-white rounded font-semibold hover:opacity-90 transition;
-  }
-
-  .btn-secondary {
-    @apply px-6 py-3 border-2 border-gold text-gold rounded font-semibold hover:bg-gold hover:text-white transition;
-  }
-
-  .btn-danger {
-    @apply px-4 py-2 bg-apapacho-red text-white rounded font-semibold hover:opacity-90 transition;
-  }
-
-  .card {
-    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
-  }
-
-  .input-field {
-    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold;
-  }
-}

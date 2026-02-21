@@ -30,8 +30,8 @@ export default function BooksTab({ books, setBooks }) {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Create Book Form */}
       <div className="lg:col-span-1">
-        <div className="card">
-          <h2 className="text-2xl font-serif font-bold text-gold mb-6">Crear Nuevo Libro</h2>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 className="text-2xl font-serif font-bold mb-6" style={{ color: '#C5A059' }}>Crear Nuevo Libro</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">Título *</label>
@@ -41,7 +41,8 @@ export default function BooksTab({ books, setBooks }) {
                 value={formData.title}
                 onChange={handleInputChange}
                 required
-                className="input-field"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2"
+                style={{ '--tw-ring-color': '#C5A059' }}
                 placeholder="Ej: El Viaje del Héroe"
               />
             </div>
@@ -53,7 +54,8 @@ export default function BooksTab({ books, setBooks }) {
                 value={formData.author}
                 onChange={handleInputChange}
                 required
-                className="input-field"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2"
+                style={{ '--tw-ring-color': '#C5A059' }}
                 placeholder="Ej: Juan Pérez"
               />
             </div>
@@ -65,7 +67,8 @@ export default function BooksTab({ books, setBooks }) {
                 value={formData.slug}
                 onChange={handleInputChange}
                 required
-                className="input-field"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2"
+                style={{ '--tw-ring-color': '#C5A059' }}
                 placeholder="Ej: el-viaje-del-heroe"
               />
             </div>
@@ -76,11 +79,12 @@ export default function BooksTab({ books, setBooks }) {
                 value={formData.description}
                 onChange={handleInputChange}
                 rows="4"
-                className="input-field"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2"
+                style={{ '--tw-ring-color': '#C5A059' }}
                 placeholder="Describe el libro..."
               />
             </div>
-            <button type="submit" className="btn-primary w-full">
+            <button type="submit" className="w-full px-6 py-3 text-white rounded font-semibold transition hover:opacity-90" style={{ backgroundColor: '#C5A059' }}>
               Crear Libro
             </button>
           </form>
@@ -89,15 +93,15 @@ export default function BooksTab({ books, setBooks }) {
 
       {/* Books List */}
       <div className="lg:col-span-2">
-        <h2 className="text-2xl font-serif font-bold text-gold mb-6">Libros Publicados</h2>
+        <h2 className="text-2xl font-serif font-bold mb-6" style={{ color: '#C5A059' }}>Libros Publicados</h2>
         <div className="space-y-4">
           {books.length === 0 ? (
-            <div className="card text-center py-12">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 text-center py-12">
               <p className="text-gray-600">No hay libros aún. ¡Crea el primero!</p>
             </div>
           ) : (
             books.map((book) => (
-              <div key={book.id} className="card">
+              <div key={book.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h3 className="text-xl font-serif font-bold text-gray-900">{book.title}</h3>
