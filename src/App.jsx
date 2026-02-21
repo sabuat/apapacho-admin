@@ -23,6 +23,8 @@ function App() {
       setLoading(true)
       setError(null)
       
+      console.log('Cargando libros desde:', API_URL)
+      
       // Intentar cargar libros desde la API
       const response = await fetch(`${API_URL}/api/trpc/books.list?input={}`, {
         method: 'GET',
@@ -37,22 +39,19 @@ function App() {
       }
       
       const data = await response.json()
+      console.log('Respuesta de la API:', data)
+      
       const booksData = data.result?.data || []
-      setBooks(Array.isArray(booksData) ? booksData : [])
+      const validBooks = Array.isArray(booksData) ? booksData : []
+      setBooks(validBooks)
+      
+      if (validBooks.length === 0) {
+        setError('No hay libros en la base de datos aún')
+      }
     } catch (error) {
       console.error('Error loading books:', error)
-      setError(`Error al cargar los libros: ${error.message}`)
-      // Usar datos de ejemplo si hay error
-      setBooks([
-        {
-          id: 1,
-          title: 'Ejemplo de Libro',
-          author: 'Autor Ejemplo',
-          slug: 'ejemplo-libro',
-          published: true,
-          description: 'Este es un libro de ejemplo'
-        }
-      ])
+      setError(`Error: ${error.message}`)
+      setBooks([])
     } finally {
       setLoading(false)
     }
@@ -79,10 +78,10 @@ function App() {
           </div>
         ) : (
           <>
-            {activeTab === 'books' && <BooksTab books={books} onBooksChange={loadBooks} />}
-            {activeTab === 'chapters' && <ChaptersTab books={books} />}
+            {activeTab === 'books' && <BooksTab books={books || []} onBooksChange={loadBooks} />}
+            {activeTab === 'chapters' && <ChaptersTab books={books || []} />}
             {activeTab === 'webinars' && <WebinarsTab />}
-            {activeTab === 'stats' && <StatsTab books={books} />}
+            {activeTab === 'stats' && <StatsTab books={books || []} />}
           </>
         )}
       </main>
