@@ -14,6 +14,7 @@ export default function Admin() {
     <>
       <Head>
         <title>Panel de Administración - Apapacho Reader</title>
+        <link rel="shortcut icon" href="/favicon.ico?v=2" />
         <meta name="description" content="Gestiona los libros, capítulos y webinars de Apapacho Reader" />
       </Head>
 
