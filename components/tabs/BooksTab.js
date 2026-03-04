@@ -109,7 +109,6 @@ export default function BooksTab({ books, setBooks }) {
 
   return (
     <div className="flex flex-col lg:flex-row gap-8">
-      {/* Formulario (60% width) */}
       <div className="lg:w-[60%]">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sticky top-6">
           <h2 className="text-2xl font-serif font-bold mb-6 text-gold">
@@ -157,18 +156,18 @@ export default function BooksTab({ books, setBooks }) {
         </div>
       </div>
 
-      {/* Lista de Libros (40% width) */}
       <div className="lg:w-[40%]">
-        <h2 className="text-xl font-serif font-bold mb-6 text-gold">Libros</h2>
+        <h2 className="text-xl font-serif font-bold mb-6 text-gold">Libros Registrados</h2>
         <div className="space-y-4">
           {loading ? <p>Cargando...</p> : books.map((book) => (
-            <div key={book.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 flex gap-4">
+            <div key={book.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 flex gap-4 items-center">
               <img src={book.cover_url || '/api/placeholder/80/120'} className="w-16 h-24 object-cover rounded shadow-sm" alt="" />
               <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-gray-900 truncate">{book.title}</h3>
-                <div className="flex gap-2 mt-3">
-                  <button onClick={() => handleEditClick(book)} className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">Editar</button>
-                  <button onClick={() => handleDelete(book.id)} className="text-xs font-bold text-red-600 bg-red-50 px-2 py-1 rounded">Eliminar</button>
+                <h3 className="font-bold text-gray-900 truncate text-base">{book.title}</h3>
+                <p className="text-xs text-gray-500 mb-3">{book.author}</p>
+                <div className="flex gap-2">
+                  <button onClick={() => handleEditClick(book)} className="flex-1 text-sm font-bold text-blue-600 bg-blue-50 py-2 rounded border border-blue-100 hover:bg-blue-100 transition">Editar</button>
+                  <button onClick={() => handleDelete(book.id)} className="flex-1 text-sm font-bold text-red-600 bg-red-50 py-2 rounded border border-red-100 hover:bg-red-100 transition">Eliminar</button>
                 </div>
               </div>
             </div>
