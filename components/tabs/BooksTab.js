@@ -11,6 +11,9 @@ export default function BooksTab({ books, setBooks }) {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
+  // Extraemos los géneros únicos directamente de los libros cargados
+  const uniqueGenres = [...new Set(books.map(b => b.genre).filter(Boolean))].sort()
+
   useEffect(() => {
     fetchBooks()
   }, [])
@@ -88,7 +91,7 @@ export default function BooksTab({ books, setBooks }) {
       }
       fetchBooks()
       cancelEdit()
-      alert('¡Operación exitosa!')
+      alert('Operación exitosa.')
     } catch (error) {
       alert('Error: ' + error.message)
     } finally {
@@ -97,7 +100,7 @@ export default function BooksTab({ books, setBooks }) {
   }
 
   const handleDelete = async (id) => {
-    if(!window.confirm('¿Seguro que quieres eliminar este libro?')) return;
+    if(!window.confirm('¿Seguro que deseas eliminar este libro del catálogo?')) return;
     try {
       const { error } = await supabase.from('books').delete().eq('id', id)
       if (error) throw error
@@ -108,70 +111,102 @@ export default function BooksTab({ books, setBooks }) {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8">
-      <div className="lg:w-[60%]">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sticky top-6">
-          <h2 className="text-2xl font-serif font-bold mb-6 text-gold">
-            {editingId ? 'Editar Libro' : 'Crear Nuevo Libro'}
+    <div className="flex flex-col lg:flex-row gap-16">
+      <div className="lg:w-1/2">
+        <div className="sticky top-6">
+          <h2 className="text-3xl font-serif italic text-brand-dark mb-8">
+            {editingId ? 'Editar Obra Literaria' : 'Registrar Nueva Obra'}
           </h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="flex items-center gap-2 p-2 bg-gray-50 rounded border border-gray-100">
-              <input type="checkbox" name="published" id="published" checked={formData.published} onChange={handleInputChange} className="w-4 h-4 accent-gold" />
-              <label htmlFor="published" className="text-sm font-medium text-gray-700">Publicar libro inmediatamente</label>
+          
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="flex items-center gap-3 pb-2">
+              <input type="checkbox" name="published" id="published" checked={formData.published} onChange={handleInputChange} className="w-5 h-5 accent-brand-dark cursor-pointer rounded" />
+              <label htmlFor="published" className="text-xs font-bold uppercase tracking-[0.1em] text-brand-dark cursor-pointer">
+                Publicar inmediatamente
+              </label>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+
+            <div className="grid grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1">Idioma</label>
-                <select name="language" value={formData.language} onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-gold">
+                <label className="block text-xs font-bold uppercase tracking-[0.1em] text-gray-500 mb-2">Idioma</label>
+                <select name="language" value={formData.language} onChange={handleInputChange} className="editorial-input cursor-pointer">
                   <option value="ES">Español</option>
                   <option value="EN">Inglés</option>
                   <option value="PT">Portugués</option>
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1">Género</label>
-                <select name="genre" value={formData.genre} onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-gold">
-                  <option value="">Seleccionar...</option>
-                  <option value="Ficción">Ficción</option>
-                  <option value="Poesía">Poesía</option>
-                  <option value="Infantil">Infantil</option>
-                </select>
+                <label className="block text-xs font-bold uppercase tracking-[0.1em] text-gray-500 mb-2">Género</label>
+                <input 
+                  list="genre-list" 
+                  name="genre" 
+                  value={formData.genre} 
+                  onChange={handleInputChange} 
+                  placeholder="Escribe o selecciona..." 
+                  className="editorial-input" 
+                  autoComplete="off"
+                />
+                <datalist id="genre-list">
+                  {uniqueGenres.map(g => (
+                    <option key={g} value={g} />
+                  ))}
+                </datalist>
               </div>
             </div>
+
             <div>
-              <label className="block text-sm font-medium text-gray-900 mb-1">Portada</label>
-              <input type="file" accept="image/*" onChange={handleFileChange} className="text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-yellow-50 file:text-gold" />
+              <label className="block text-xs font-bold uppercase tracking-[0.1em] text-gray-500 mb-2">Portada del Libro</label>
+              <input type="file" accept="image/*" onChange={handleFileChange} className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border file:border-gray-200 file:rounded-lg file:bg-white file:text-xs file:font-bold file:uppercase file:tracking-[0.1em] file:text-brand-dark hover:file:border-brand-dark file:transition-colors file:cursor-pointer file:shadow-sm" />
             </div>
-            <input type="text" name="title" value={formData.title} onChange={handleInputChange} required placeholder="Título" className="w-full px-4 py-2 border border-gray-300 rounded-lg" />
-            <input type="text" name="author" value={formData.author} onChange={handleInputChange} required placeholder="Autor" className="w-full px-4 py-2 border border-gray-300 rounded-lg" />
-            <input type="text" name="slug" value={formData.slug} onChange={handleInputChange} required placeholder="slug-del-libro" className="w-full px-4 py-2 border border-gray-300 rounded-lg" />
-            <textarea name="description" value={formData.description} onChange={handleInputChange} rows="3" placeholder="Descripción..." className="w-full px-4 py-2 border border-gray-300 rounded-lg" />
-            <div className="flex gap-2">
-              <button disabled={saving} type="submit" className="flex-1 py-3 bg-gold text-white rounded font-bold hover:opacity-90 disabled:opacity-50">
-                {saving ? 'Guardando...' : (editingId ? 'Actualizar' : 'Crear')}
+
+            <div className="space-y-4 pt-2">
+              <input type="text" name="title" value={formData.title} onChange={handleInputChange} required placeholder="Título de la obra" className="editorial-input text-xl font-serif italic" />
+              <input type="text" name="author" value={formData.author} onChange={handleInputChange} required placeholder="Nombre del autor" className="editorial-input" />
+              <input type="text" name="slug" value={formData.slug} onChange={handleInputChange} required placeholder="slug-de-la-obra" className="editorial-input font-mono text-sm" />
+              <textarea name="description" value={formData.description} onChange={handleInputChange} rows="4" placeholder="Sinopsis o descripción breve..." className="editorial-input resize-y" />
+            </div>
+
+            <div className="flex gap-4 pt-4">
+              <button disabled={saving} type="submit" className="editorial-btn flex-1">
+                {saving ? 'Procesando...' : (editingId ? 'Guardar Cambios' : 'Crear Libro')}
               </button>
-              {editingId && <button type="button" onClick={cancelEdit} className="px-6 py-3 bg-gray-100 text-gray-600 rounded">Cancelar</button>}
+              {editingId && (
+                <button type="button" onClick={cancelEdit} className="editorial-btn-outline flex-1">
+                  Cancelar
+                </button>
+              )}
             </div>
           </form>
         </div>
       </div>
 
-      <div className="lg:w-[40%]">
-        <h2 className="text-xl font-serif font-bold mb-6 text-gold">Libros Registrados</h2>
-        <div className="space-y-4">
-          {loading ? <p>Cargando...</p> : books.map((book) => (
-            <div key={book.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 flex gap-4 items-center">
-              <img src={book.cover_url || '/api/placeholder/80/120'} className="w-16 h-24 object-cover rounded shadow-sm" alt="" />
-              <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-gray-900 truncate text-base">{book.title}</h3>
-                <p className="text-xs text-gray-500 mb-3">{book.author}</p>
-                <div className="flex gap-2">
-                  <button onClick={() => handleEditClick(book)} className="flex-1 text-sm font-bold text-blue-600 bg-blue-50 py-2 rounded border border-blue-100 hover:bg-blue-100 transition">Editar</button>
-                  <button onClick={() => handleDelete(book.id)} className="flex-1 text-sm font-bold text-red-600 bg-red-50 py-2 rounded border border-red-100 hover:bg-red-100 transition">Eliminar</button>
+      <div className="lg:w-1/2">
+        <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-gray-400 mb-8 pb-4 border-b border-gray-200">
+          Catálogo Actual
+        </h2>
+        <div className="flex flex-col gap-2">
+          {loading ? (
+             <p className="text-base text-gray-400 italic font-serif">Cargando catálogo...</p>
+          ) : books.length === 0 ? (
+             <p className="text-base text-gray-400 italic font-serif">No hay libros registrados aún.</p>
+          ) : (
+            books.map((book) => (
+              <div key={book.id} className="group flex gap-6 items-start p-4 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all">
+                <img src={book.cover_url || '/api/placeholder/80/120'} className="w-20 h-28 object-cover rounded-md shadow-sm" alt="Portada" />
+                <div className="flex-1 min-w-0 flex flex-col justify-between h-28 py-1">
+                  <div>
+                    <h3 className="font-serif italic text-2xl text-brand-dark truncate leading-tight">{book.title}</h3>
+                    <p className="text-xs font-bold uppercase tracking-[0.1em] text-gray-500 mt-2">{book.author}</p>
+                  </div>
+                  <div className="flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={() => handleEditClick(book)} className="text-xs font-bold uppercase tracking-[0.1em] text-brand-dark hover:text-gold transition-colors">Editar</button>
+                    <span className="text-gray-200">|</span>
+                    <button onClick={() => handleDelete(book.id)} className="text-xs font-bold uppercase tracking-[0.1em] text-red-600 hover:text-red-800 transition-colors">Eliminar</button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </div>

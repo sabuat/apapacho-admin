@@ -9,12 +9,14 @@ module.exports = {
     extend: {
       colors: {
         gold: '#C5A059',
+        'brand-dark': '#1A202C',
         'apapacho-blue': '#8C97AE',
         'apapacho-red': '#9E4747',
+        'brand-bg': '#F9F9F7',
       },
       fontFamily: {
         serif: ['Playfair Display', 'serif'],
-        sans: ['Poiret One', 'sans-serif'],
+        sans: ['Lato', 'sans-serif'],
       },
     },
   },

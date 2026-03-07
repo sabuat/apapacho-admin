@@ -1,31 +1,33 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poiret+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --color-gold: #C5A059;
-  --color-blue: #8C97AE;
-  --color-red: #9E4747;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
 body {
-  font-family: 'Poiret One', sans-serif;
-  background-color: #f9f7f4;
-  color: #1a1a1a;
+  font-family: 'Lato', sans-serif;
+  background-color: #F9F9F7;
+  color: #1A202C;
+  -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Playfair Display', serif;
+}
+
+/* Clases de diseño editorial modernas y suaves */
+.editorial-input {
+  @apply w-full px-4 py-3 bg-white border border-gray-200 rounded-lg shadow-sm focus:border-gold focus:ring-1 focus:ring-gold outline-none transition-all text-sm text-brand-dark placeholder-gray-400;
+}
+
+.editorial-btn {
+  @apply px-8 py-4 bg-brand-dark text-white text-xs font-bold uppercase tracking-[0.15em] hover:bg-gold transition-colors duration-300 rounded-lg shadow-md;
+}
+
+.editorial-btn-outline {
+  @apply px-8 py-4 border border-gray-200 bg-white text-brand-dark text-xs font-bold uppercase tracking-[0.15em] hover:border-brand-dark transition-colors duration-300 rounded-lg shadow-sm;
+}
+
+.editorial-btn-danger {
+  @apply px-8 py-4 border border-red-200 bg-white text-red-700 text-xs font-bold uppercase tracking-[0.15em] hover:bg-red-50 transition-colors duration-300 rounded-lg shadow-sm;
 }

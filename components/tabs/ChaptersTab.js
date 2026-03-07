@@ -9,6 +9,9 @@ export default function ChaptersTab({ books }) {
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
 
+  // Aquí ordenamos los libros alfabéticamente solo para la vista
+  const sortedBooks = [...books].sort((a, b) => a.title.localeCompare(b.title))
+
   useEffect(() => {
     if (selectedBookId) fetchChapters(selectedBookId)
     else setChapters([])
@@ -29,19 +32,6 @@ export default function ChaptersTab({ books }) {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  // Inserta Markdown (** para negrita, * para cursiva)
-  const insertFormat = (symbol) => {
-    const textarea = document.getElementById('chapter-content');
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const text = formData.content;
-    const selected = text.substring(start, end);
-    
-    const newText = text.substring(0, start) + `${symbol}${selected}${symbol}` + text.substring(end);
-    setFormData({ ...formData, content: newText });
-    setTimeout(() => textarea.focus(), 10);
-  }
-
   const handleEdit = (chapter) => {
     setEditingChapterId(chapter.id)
     setFormData({ title: chapter.title, content: chapter.content, chapter_number: chapter.chapter_number })
@@ -50,7 +40,7 @@ export default function ChaptersTab({ books }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!selectedBookId) return alert('Selecciona un libro')
+    if (!selectedBookId) return alert('Por favor, selecciona una obra primero.')
     setSaving(true)
     const chapterData = {
       book_id: selectedBookId,
@@ -69,88 +59,97 @@ export default function ChaptersTab({ books }) {
       setFormData({ title: '', content: '', chapter_number: '' })
       setEditingChapterId(null)
       fetchChapters(selectedBookId)
-      alert('¡Guardado correctamente!')
+      alert('Capítulo guardado con éxito.')
     } catch (error) { alert(error.message) }
     finally { setSaving(false) }
   }
 
   const handleDelete = async (id) => {
-    if(!window.confirm('¿Eliminar capítulo?')) return;
+    if(!window.confirm('¿Eliminar este capítulo de forma permanente?')) return;
     await supabase.from('chapters').delete().eq('id', id)
     fetchChapters(selectedBookId)
   }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8">
-      <div className="lg:w-[60%] space-y-6">
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <label className="block text-sm font-bold text-gold mb-2">Libro Seleccionado</label>
-          <select value={selectedBookId} onChange={(e) => setSelectedBookId(e.target.value)} className="w-full p-3 border border-gray-300 rounded-lg mb-4 bg-gray-50 focus:ring-2 focus:ring-gold outline-none">
-            <option value="">-- Elige un libro --</option>
-            {books.map(b => <option key={b.id} value={b.id}>{b.title}</option>)}
+    <div className="flex flex-col lg:flex-row gap-16">
+      <div className="lg:w-3/5 space-y-8">
+        <div>
+          <label className="block text-xs font-bold uppercase tracking-[0.1em] text-gray-500 mb-3">Seleccionar Obra</label>
+          <select value={selectedBookId} onChange={(e) => setSelectedBookId(e.target.value)} className="editorial-input text-lg font-serif italic cursor-pointer">
+            <option value="">-- Elige un título del catálogo --</option>
+            {sortedBooks.map(b => <option key={b.id} value={b.id}>{b.title}</option>)}
           </select>
-
-          {selectedBookId && (
-            <form onSubmit={handleSubmit} className="space-y-4 border-t pt-4">
-              <div className="flex gap-4">
-                <div className="w-24">
-                  <label className="text-[10px] uppercase font-bold text-gray-400">Nº</label>
-                  <input type="number" name="chapter_number" value={formData.chapter_number} onChange={handleInputChange} className="w-full p-2 border border-gray-300 rounded-lg" required />
-                </div>
-                <div className="flex-1">
-                  <label className="text-[10px] uppercase font-bold text-gray-400">Título</label>
-                  <input type="text" name="title" value={formData.title} onChange={handleInputChange} className="w-full p-2 border border-gray-300 rounded-lg" required />
-                </div>
-              </div>
-
-              <div>
-                <label className="text-[10px] uppercase font-bold text-gray-400">Contenido</label>
-                <div className="flex gap-2 mb-2">
-                  <button type="button" onClick={() => insertFormat('**')} className="w-10 h-10 bg-gray-100 border border-gray-300 rounded font-bold hover:bg-gray-200">B</button>
-                  <button type="button" onClick={() => insertFormat('*')} className="w-10 h-10 bg-gray-100 border border-gray-300 rounded italic hover:bg-gray-200">I</button>
-                </div>
-                <textarea 
-                  id="chapter-content"
-                  name="content" 
-                  value={formData.content} 
-                  onChange={handleInputChange} 
-                  rows="14" 
-                  placeholder="Escribe el texto aquí. Usa los botones para dar formato."
-                  className="w-full p-4 border border-gray-300 rounded-lg font-sans leading-relaxed focus:ring-2 focus:ring-gold outline-none" 
-                />
-              </div>
-
-              <div className="flex gap-2">
-                <button disabled={saving} type="submit" className="flex-1 py-4 bg-gold text-white rounded-lg font-bold shadow-md hover:bg-opacity-90 transition">
-                  {saving ? 'Procesando...' : (editingChapterId ? 'Actualizar' : 'Guardar Capítulo')}
-                </button>
-                {editingChapterId && (
-                  <button type="button" onClick={() => {setEditingChapterId(null); setFormData({title:'', content:'', chapter_number:''})}} className="bg-gray-200 px-6 rounded-lg text-gray-600 font-bold">
-                    Cancelar
-                  </button>
-                )}
-              </div>
-            </form>
-          )}
         </div>
+
+        {selectedBookId && (
+          <form onSubmit={handleSubmit} className="space-y-6 animate-fade-in">
+            <div className="flex gap-6">
+              <div className="w-32">
+                <label className="block text-xs font-bold uppercase tracking-[0.1em] text-gray-500 mb-2">Capítulo Nº</label>
+                <input type="number" name="chapter_number" value={formData.chapter_number} onChange={handleInputChange} className="editorial-input text-center text-lg" required />
+              </div>
+              <div className="flex-1">
+                <label className="block text-xs font-bold uppercase tracking-[0.1em] text-gray-500 mb-2">Título del Capítulo</label>
+                <input type="text" name="title" value={formData.title} onChange={handleInputChange} className="editorial-input font-serif text-2xl" required />
+              </div>
+            </div>
+
+            <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden transition-all focus-within:ring-1 focus-within:ring-gold focus-within:border-gold">
+              <textarea 
+                id="chapter-content"
+                name="content" 
+                value={formData.content} 
+                onChange={handleInputChange} 
+                rows="16" 
+                placeholder="Comienza a escribir tu historia aquí..."
+                className="w-full p-6 bg-transparent border-none font-serif text-xl leading-relaxed text-brand-dark focus:ring-0 outline-none resize-y mt-2" 
+              />
+            </div>
+
+            <div className="flex gap-4 pt-4">
+              <button disabled={saving} type="submit" className="editorial-btn w-64">
+                {saving ? 'Procesando...' : (editingChapterId ? 'Actualizar Texto' : 'Guardar Capítulo')}
+              </button>
+              {editingChapterId && (
+                <button type="button" onClick={() => {setEditingChapterId(null); setFormData({title:'', content:'', chapter_number:''})}} className="editorial-btn-outline w-40">
+                  Descartar
+                </button>
+              )}
+            </div>
+          </form>
+        )}
       </div>
 
-      <div className="lg:w-[40%]">
-        <h2 className="text-xl font-serif font-bold mb-6 text-gold">Capítulos</h2>
+      <div className="lg:w-2/5">
+        <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-gray-400 mb-8 pb-4 border-b border-gray-200">
+          Índice
+        </h2>
         {selectedBookId ? (
-          <div className="space-y-4">
-            {loading ? <p>Cargando...</p> : chapters.map((c) => (
-              <div key={c.id} className="bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
-                <p className="text-xs font-bold text-gold mb-1">Capítulo {c.chapter_number}</p>
-                <p className="text-base font-bold text-gray-800 mb-4 truncate">{c.title}</p>
-                <div className="flex gap-2">
-                  <button onClick={() => handleEdit(c)} className="flex-1 py-2 text-sm font-bold text-blue-600 bg-blue-50 rounded border border-blue-100 hover:bg-blue-100 transition">Editar</button>
-                  <button onClick={() => handleDelete(c.id)} className="flex-1 py-2 text-sm font-bold text-red-600 bg-red-50 rounded border border-red-100 hover:bg-red-100 transition">Eliminar</button>
+          <div className="flex flex-col gap-3">
+            {loading ? (
+              <p className="text-base text-gray-400 italic font-serif">Cargando índice...</p>
+            ) : chapters.length === 0 ? (
+              <p className="text-base text-gray-400 italic font-serif">Esta obra aún no tiene capítulos.</p>
+            ) : (
+              chapters.map((c) => (
+                <div key={c.id} className="group p-5 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col gap-2">
+                  <div className="flex justify-between items-baseline">
+                    <p className="text-xs font-bold uppercase tracking-[0.1em] text-gold">Capítulo {c.chapter_number}</p>
+                    <div className="flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button onClick={() => handleEdit(c)} className="text-[10px] font-bold uppercase tracking-[0.1em] text-brand-dark hover:text-gold transition-colors">Editar</button>
+                      <button onClick={() => handleDelete(c.id)} className="text-[10px] font-bold uppercase tracking-[0.1em] text-red-600 hover:text-red-800 transition-colors">Eliminar</button>
+                    </div>
+                  </div>
+                  <p className="font-serif italic text-xl text-brand-dark truncate">{c.title}</p>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
-        ) : <div className="text-gray-400 text-center py-20 border-2 border-dashed rounded-lg">Selecciona un libro</div>}
+        ) : (
+          <div className="flex items-center justify-center h-40 border border-dashed border-gray-200 rounded-xl bg-white/50">
+            <p className="text-xs font-bold uppercase tracking-[0.1em] text-gray-400">Selecciona una obra</p>
+          </div>
+        )}
       </div>
     </div>
   )
