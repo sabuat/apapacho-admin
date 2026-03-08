@@ -4,7 +4,8 @@ import { supabase } from '@/lib/supabase'
 export default function BooksTab({ books, setBooks }) {
   const [formData, setFormData] = useState({
     title: '', author: '', slug: '', description: '', cover_url: '',
-    published: true, language: 'ES', genre: ''
+    published: true, language: 'ES', genre: '',
+    paginas: '', asin: '', link_amazon: '' // <-- Añadimos los campos iniciales
   })
   const [coverFile, setCoverFile] = useState(null)
   const [editingId, setEditingId] = useState(null)
@@ -44,7 +45,11 @@ export default function BooksTab({ books, setBooks }) {
     setFormData({
       title: book.title, author: book.author, slug: book.slug, description: book.description, 
       cover_url: book.cover_url || '', published: book.published ?? true, 
-      language: book.language || 'ES', genre: book.genre || ''
+      language: book.language || 'ES', genre: book.genre || '',
+      // Filtramos para que no muestre "---" al editar, dejándolo en blanco si no tiene valor real
+      paginas: book.paginas === '---' ? '' : (book.paginas || ''),
+      asin: book.asin === '---' ? '' : (book.asin || ''),
+      link_amazon: book.link_amazon === '#' ? '' : (book.link_amazon || '')
     })
     setCoverFile(null)
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -52,7 +57,11 @@ export default function BooksTab({ books, setBooks }) {
 
   const cancelEdit = () => {
     setEditingId(null)
-    setFormData({ title: '', author: '', slug: '', description: '', cover_url: '', published: true, language: 'ES', genre: '' })
+    setFormData({ 
+      title: '', author: '', slug: '', description: '', cover_url: '', 
+      published: true, language: 'ES', genre: '',
+      paginas: '', asin: '', link_amazon: '' 
+    })
     setCoverFile(null)
   }
 
@@ -70,6 +79,7 @@ export default function BooksTab({ books, setBooks }) {
         finalCoverUrl = publicUrlData.publicUrl
       }
 
+      // Preparamos los datos incluyendo las variables comerciales
       const bookData = {
         title: formData.title,
         author: formData.author,
@@ -78,7 +88,10 @@ export default function BooksTab({ books, setBooks }) {
         cover_url: finalCoverUrl,
         published: formData.published,
         language: formData.language,
-        genre: formData.genre
+        genre: formData.genre,
+        paginas: formData.paginas || '---',
+        asin: formData.asin || '---',
+        link_amazon: formData.link_amazon || '#'
       }
 
       if (editingId) {
@@ -163,7 +176,26 @@ export default function BooksTab({ books, setBooks }) {
               <input type="text" name="title" value={formData.title} onChange={handleInputChange} required placeholder="Título de la obra" className="editorial-input text-xl font-serif italic" />
               <input type="text" name="author" value={formData.author} onChange={handleInputChange} required placeholder="Nombre del autor" className="editorial-input" />
               <input type="text" name="slug" value={formData.slug} onChange={handleInputChange} required placeholder="slug-de-la-obra" className="editorial-input font-mono text-sm" />
+              
               <textarea name="description" value={formData.description} onChange={handleInputChange} rows="4" placeholder="Sinopsis o descripción breve..." className="editorial-input resize-y" />
+              
+              {/* --- NUEVOS CAMPOS COMERCIALES --- */}
+              <div className="grid grid-cols-2 gap-4 pt-2">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-[0.1em] text-gray-500 mb-1 ml-1">Páginas</label>
+                  <input type="text" name="paginas" value={formData.paginas} onChange={handleInputChange} placeholder="Ej: 250" className="editorial-input text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-[0.1em] text-gray-500 mb-1 ml-1">ASIN</label>
+                  <input type="text" name="asin" value={formData.asin} onChange={handleInputChange} placeholder="Ej: B0DXDLLDXF" className="editorial-input text-sm" />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-[0.1em] text-gray-500 mb-1 ml-1">Enlace de Amazon</label>
+                <input type="url" name="link_amazon" value={formData.link_amazon} onChange={handleInputChange} placeholder="https://www.amazon.es/dp/..." className="editorial-input text-sm" />
+              </div>
+              {/* ---------------------------------- */}
             </div>
 
             <div className="flex gap-4 pt-4">
