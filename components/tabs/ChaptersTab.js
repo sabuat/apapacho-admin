@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Bold, Italic, Heading1, Heading2, List, ListOrdered, Image as ImageIcon, Loader2 } from 'lucide-react'
+import { Bold, Italic, Heading1, Heading2, List, ListOrdered, Image as ImageIcon, Loader2, Quote, Indent } from 'lucide-react'
 
 export default function ChaptersTab({ books }) {
   const [selectedBookId, setSelectedBookId] = useState('')
@@ -10,11 +10,9 @@ export default function ChaptersTab({ books }) {
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
   
-  // Nuevos estados para el editor de imágenes
   const [uploadingImage, setUploadingImage] = useState(false)
   const fileInputRef = useRef(null)
 
-  // Ordenamos los libros alfabéticamente solo para la vista
   const sortedBooks = [...books].sort((a, b) => a.title.localeCompare(b.title))
 
   useEffect(() => {
@@ -75,7 +73,6 @@ export default function ChaptersTab({ books }) {
     fetchChapters(selectedBookId)
   }
 
-  // --- LÓGICA DEL EDITOR DE TEXTO ENRIQUECIDO (MARKDOWN) ---
   const insertText = (prefix, suffix = '') => {
     const textarea = document.getElementById('chapter-content')
     if (!textarea) return
@@ -88,7 +85,6 @@ export default function ChaptersTab({ books }) {
     const newText = text.substring(0, start) + prefix + selectedText + suffix + text.substring(end)
     setFormData((prev) => ({ ...prev, content: newText }))
 
-    // Restauramos el foco y la posición del cursor para que el usuario siga escribiendo
     setTimeout(() => {
       textarea.focus()
       textarea.setSelectionRange(start + prefix.length, end + prefix.length)
@@ -104,20 +100,18 @@ export default function ChaptersTab({ books }) {
       const fileExt = file.name.split('.').pop()
       const fileName = `img_${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`
       
-      // Usamos el bucket 'covers' que ya tienes configurado públicamente
       const { error: uploadError } = await supabase.storage.from('covers').upload(fileName, file)
       if (uploadError) throw uploadError
 
       const { data: publicUrlData } = supabase.storage.from('covers').getPublicUrl(fileName)
       const publicUrl = publicUrlData.publicUrl
 
-      // Insertamos la imagen en el texto automáticamente
       insertText(`\n![Imagen](${publicUrl})\n\n`, '')
     } catch (error) {
       alert('Error subiendo imagen: ' + error.message)
     } finally {
       setUploadingImage(false)
-      e.target.value = '' // Reseteamos el input
+      e.target.value = ''
     }
   }
 
@@ -131,7 +125,6 @@ export default function ChaptersTab({ books }) {
       {icon}
     </button>
   )
-  // --------------------------------------------------------
 
   return (
     <div className="flex flex-col lg:flex-row gap-16">
@@ -157,10 +150,8 @@ export default function ChaptersTab({ books }) {
               </div>
             </div>
 
-            {/* --- NUEVO EDITOR ESTILO GOOGLE DOCS --- */}
             <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden transition-all focus-within:ring-2 focus-within:ring-brand-gold/30 focus-within:border-brand-gold">
               
-              {/* Barra de Herramientas */}
               <div className="bg-gray-50 border-b border-gray-200 p-2 flex flex-wrap items-center gap-1">
                 <ToolbarBtn onClick={() => insertText('**', '**')} icon={<Bold size={16} />} title="Negrita" />
                 <ToolbarBtn onClick={() => insertText('_', '_')} icon={<Italic size={16} />} title="Cursiva" />
@@ -171,8 +162,10 @@ export default function ChaptersTab({ books }) {
                 <ToolbarBtn onClick={() => insertText('- ', '')} icon={<List size={16} />} title="Lista de viñetas" />
                 <ToolbarBtn onClick={() => insertText('1. ', '')} icon={<ListOrdered size={16} />} title="Lista numerada" />
                 <div className="w-px h-5 bg-gray-300 mx-2"></div>
+                <ToolbarBtn onClick={() => insertText('> ', '')} icon={<Quote size={16} />} title="Cita" />
+                <ToolbarBtn onClick={() => insertText('&emsp;', '')} icon={<Indent size={16} />} title="Recuar texto" />
+                <div className="w-px h-5 bg-gray-300 mx-2"></div>
                 
-                {/* Botón Mágico de Imágenes */}
                 <button 
                   type="button"
                   onClick={() => fileInputRef.current?.click()} 
@@ -186,7 +179,6 @@ export default function ChaptersTab({ books }) {
                 <input type="file" accept="image/*" ref={fileInputRef} onChange={handleImageUpload} className="hidden" />
               </div>
 
-              {/* Área de Escritura simulando una hoja A4 */}
               <div className="bg-gray-100 p-4 md:p-8">
                 <textarea 
                   id="chapter-content"
@@ -199,7 +191,6 @@ export default function ChaptersTab({ books }) {
                 />
               </div>
             </div>
-            {/* --------------------------------------- */}
 
             <div className="flex gap-4 pt-4">
               <button disabled={saving} type="submit" className="editorial-btn w-64">
