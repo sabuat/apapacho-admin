@@ -5,6 +5,7 @@ import BooksTab from '@/components/tabs/BooksTab'
 import ChaptersTab from '@/components/tabs/ChaptersTab'
 import WebinarsTab from '@/components/tabs/WebinarsTab'
 import StatsTab from '@/components/tabs/StatsTab'
+import EpubTab from '@/components/tabs/EpubTab'
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState('books')
@@ -15,6 +16,7 @@ export default function Admin() {
     { id: 'chapters', label: 'Capítulos' },
     { id: 'webinars', label: 'Webinars' },
     { id: 'stats', label: 'Estadísticas' },
+    { id: 'epub', label: 'Maquetador Sigil' },
   ]
 
   return (
@@ -27,7 +29,7 @@ export default function Admin() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
           
           {/* Navegación Editorial */}
-          <nav className="flex gap-10 border-b border-gray-200 mb-12">
+          <nav className="flex flex-wrap gap-x-10 gap-y-4 border-b border-gray-200 mb-12">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
@@ -52,6 +54,7 @@ export default function Admin() {
             {activeTab === 'chapters' && <ChaptersTab books={books} />}
             {activeTab === 'webinars' && <WebinarsTab />}
             {activeTab === 'stats' && <StatsTab books={books} />}
+            {activeTab === 'epub' && <EpubTab />}
           </div>
         </div>
       </Layout>
