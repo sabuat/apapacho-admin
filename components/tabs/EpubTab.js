@@ -3,7 +3,7 @@ import { Copy, Check, FileCode2 } from 'lucide-react';
 
 export default function EpubTab() {
   const [title, setTitle] = useState('');
-  const [filename, setFilename] = useState('BTM-cap01.html');
+  const [filename, setFilename] = useState('Name-cap-XX.html');
   const [rawText, setRawText] = useState('');
   const [formattedHtml, setFormattedHtml] = useState('');
   const [copied, setCopied] = useState(false);
