@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Bold, Italic, Heading1, Heading2, List, ListOrdered, Image as ImageIcon, Loader2, Quote, Indent } from 'lucide-react'
+import { Bold, Italic, Heading1, Heading2, List, ListOrdered, Image as ImageIcon, Loader2, Quote, Indent, MessageSquare, Mail, Smartphone, SplitSquareHorizontal } from 'lucide-react'
 
 export default function ChaptersTab({ books }) {
   const [selectedBookId, setSelectedBookId] = useState('')
@@ -91,6 +91,44 @@ export default function ChaptersTab({ books }) {
     }, 0)
   }
 
+  // Motor de inyección estructural literaria
+  const applyLiteraryFormat = (type) => {
+    const textarea = document.getElementById('chapter-content')
+    if (!textarea) return
+
+    const start = textarea.selectionStart
+    const end = textarea.selectionEnd
+    const text = formData.content
+    const selectedText = text.substring(start, end)
+    
+    let replacement = ''
+
+    switch (type) {
+      case 'dialogue':
+        replacement = selectedText ? selectedText.split('\n').map(line => line.trim() === '' ? line : line.replace(/^[-–—]*\s*/, '— ')).join('\n') : '— ';
+        break;
+      case 'letter':
+        replacement = selectedText ? selectedText.split('\n').map(line => line.trim() === '' ? line : `> ${line.replace(/^>\s*/, '')}`).join('\n') : '> ';
+        break;
+      case 'sms':
+        replacement = `\`\`\`\n${selectedText || 'Mensaje de texto'}\n\`\`\``;
+        break;
+      case 'scene-break':
+        replacement = start === end ? `\n\n***\n\n` : `\n\n***\n\n${selectedText}`;
+        break;
+      default:
+        return;
+    }
+
+    const newText = text.substring(0, start) + replacement + text.substring(end)
+    setFormData((prev) => ({ ...prev, content: newText }))
+    
+    setTimeout(() => {
+      textarea.focus()
+      textarea.setSelectionRange(start, start + replacement.length)
+    }, 0)
+  }
+
   const handleImageUpload = async (e) => {
     const file = e.target.files[0]
     if (!file) return
@@ -159,11 +197,13 @@ export default function ChaptersTab({ books }) {
                 <ToolbarBtn onClick={() => insertText('### ', '')} icon={<Heading1 size={16} />} title="Título" />
                 <ToolbarBtn onClick={() => insertText('#### ', '')} icon={<Heading2 size={16} />} title="Subtítulo" />
                 <div className="w-px h-5 bg-gray-300 mx-2"></div>
-                <ToolbarBtn onClick={() => insertText('- ', '')} icon={<List size={16} />} title="Lista de viñetas" />
-                <ToolbarBtn onClick={() => insertText('1. ', '')} icon={<ListOrdered size={16} />} title="Lista numerada" />
-                <div className="w-px h-5 bg-gray-300 mx-2"></div>
-                <ToolbarBtn onClick={() => insertText('> ', '')} icon={<Quote size={16} />} title="Cita" />
-                <ToolbarBtn onClick={() => insertText('&emsp;', '')} icon={<Indent size={16} />} title="Recuar texto" />
+                
+                {/* Herramientas de diagramación literaria */}
+                <ToolbarBtn onClick={() => applyLiteraryFormat('dialogue')} icon={<MessageSquare size={16} />} title="Diálogo (Raya)" />
+                <ToolbarBtn onClick={() => applyLiteraryFormat('letter')} icon={<Mail size={16} />} title="Carta / Cita" />
+                <ToolbarBtn onClick={() => applyLiteraryFormat('sms')} icon={<Smartphone size={16} />} title="SMS / Digital" />
+                <ToolbarBtn onClick={() => applyLiteraryFormat('scene-break')} icon={<SplitSquareHorizontal size={16} />} title="Salto de Escena" />
+                
                 <div className="w-px h-5 bg-gray-300 mx-2"></div>
                 
                 <button 
